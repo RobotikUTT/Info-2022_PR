@@ -32,6 +32,7 @@ SoftwareSerial nano(11, 10); // line série nano et méga
 LiquidCrystal_I2C lcd(0x27,16,2);  // set the LCD address to 0x27 for a 16 chars and 2 line display
 // si l'adresse n'est pas la bonne, utiliser le script i2c pour récupérer l'adresse
 // Cablage GND, 5V, SDA, SCL
+// LCD 20 mega pour SDA, 21 pour SCL
 
 void setup() {
     Serial.begin(9600);
@@ -59,19 +60,27 @@ void setup() {
     // Choix du coté
     lcd.setCursor(0,1);
     lcd.print("[DBG] choix cote"); // DBG pour debug
+    Serial.println("[DBG] choix cote");
     delay(7000);
     if(digitalRead(team_pin) == true){
       team_side = 1;
-      Serial.println("[DEBUG] Yellow team");
+      Serial.println("[DEBUG] Yellow");
       lcd.setCursor(0,1);
-      lcd.print("[DBG] Yellow "); 
+      lcd.print("[DBG] Yellow    "); 
       } // sinon par défaut à 0
     else{
-      Serial.println("[DEBUG] Purple team"); }
+      Serial.println("[DEBUG] Purple");
+      lcd.setCursor(0,1);
+      lcd.print("[DBG] Purple    ");
+      }
 
     
 
     Serial.println("[DEBUG] Attente tirette");
+    Serial.print("Valeur tirette (0 appuyé | 1 relaché) :  ");
+    lcd.setCursor(0,1);
+    lcd.print(" READY TO START ");
+    Serial.println(digitalRead(tirette_pin));
     while (!digitalRead(tirette_pin)) {}
     Serial.println("[DEBUG] START");
     delay(5);
@@ -138,7 +147,8 @@ void loop() {
         digitalWrite(pin_b_L, HIGH);
     }
 
-    if (isBlocked()) {
+    if (isBlocked()) { // bloqué -> on l'arrete
+      // transformer la boucle en while quand on entre dedans
         analogWrite(pin_en_R, 0);
         analogWrite(pin_en_L, 0);
         Serial.println("[DEBUG] isBlocked");
@@ -155,7 +165,7 @@ void loop() {
     
 }
 
-bool isBlocked() {
+bool isBlocked() { // Test pour savoir si les capteurs à ultrasons (limite de la nano actuelle
     bool test = false;
     int sensor = -1;
     while (nano.available() > 0) {
@@ -167,7 +177,7 @@ bool isBlocked() {
     return !!(sensor & 0b1100);
 }
 
-void pullOut() {
+void pullOut() { // On recule
     digitalWrite(pin_a_L, HIGH);
     digitalWrite(pin_b_L, LOW);
     digitalWrite(pin_a_R, HIGH);
@@ -180,10 +190,10 @@ void pullOut() {
     analogWrite(pin_en_R, 0);
     analogWrite(pin_en_L, 0);
 
-    while(true);
+    while(true); // Pour terminer le programme à l'infini
 }
 
-void SeRetourner () { // Se retourner sur la ligne
+void SeRetourner () { // Se retourner sur la ligne, pas sans ligne
     int DemiTour = 0;
     while (DemiTour < 2) { 
         int sensor_R = analogRead(pin_eye_R);
@@ -213,18 +223,22 @@ void SeRetourner () { // Se retourner sur la ligne
     }
 }
 
-void findLine() {
-    int other = -1; // variable pour attendre quel capteur est le second à toucher la ligne
+void findLine() {// DEBUG-FDL
+    //int other = -1; // variable pour attendre quel capteur est le second à toucher la ligne
 
-    Serial.println("[DEBUG] findLine");
-    analogWrite(pin_en_R, 100);
+    Serial.println("[DEBUG-FDL] findLine");
+    lcd.setCursor(0,1);
+    lcd.print("[DBG] FDL START ");
+    analogWrite(pin_en_R, 100); // 80 rame, 100 va vite, 255 le max, non linéaire, speed à 0 pour l'arreter  PWM
     analogWrite(pin_en_L, 100);
 
+    int aligned = 0; // =0 si non aligné, 1 si aligné sur bande noire
+    // TODO la suite
     while (true) {
         int sensor_R = analogRead(pin_eye_R);
         int sensor_L = analogRead(pin_eye_L);
 
-        if (other >= 0) {
+        /* if (other >= 0) {
             if (analogRead(other) < 500) {
                 Serial.println("Sequence terminee");
                 digitalWrite(pin_a_R, HIGH);
@@ -241,7 +255,7 @@ void findLine() {
                 // analogWrite(pin_en_R, 100);
                 // analogWrite(pin_en_L, 80);
                 other = pin_eye_R;
-                Serial.println("Trouve ligne gauche");
+                Serial.println("[DEBUG-FDL] Trouve ligne gauche");
             }
             if (sensor_R < 500) {
                 // analogWrite(pin_en_R, 80);
@@ -251,11 +265,12 @@ void findLine() {
                 analogWrite(pin_en_L, 50);
             }
                 
-        }
+        }*/
     }
 }
 
 int sensorRMotorTF(int sensor_L, int sensor_R) { // fonction de transfert proportionnel: valeurs capteurs -> valeurs moteurs
+  // Loop pour le suivi de ligne entree capteurs sortie moteur, A UTILISER
     //return sensor_L * motor_speed / (1024);
 
     if (sensor_L < 500)
