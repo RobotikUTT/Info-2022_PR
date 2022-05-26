@@ -38,7 +38,7 @@ void setup() {
 
     // ############# LCD  
     lcd.init();
-    Serial.println("[DEBUG] Intitialisation");                      
+    Serial.println("[DEBUG] Intitialisation LCD");                      
     // initialize the lcd 
     // Print a message to the LCD.
     lcd.backlight();
@@ -59,14 +59,19 @@ void setup() {
     // Choix du coté
     lcd.setCursor(0,1);
     lcd.print("[DBG] choix cote"); // DBG pour debug
-    delay(7000) 
-    if(digitalRead(team_pin) == TRUE){
+    delay(7000);
+    if(digitalRead(team_pin) == true){
       team_side = 1;
+      Serial.println("[DEBUG] Yellow team");
+      lcd.setCursor(0,1);
+      lcd.print("[DBG] Yellow "); 
       } // sinon par défaut à 0
+    else{
+      Serial.println("[DEBUG] Purple team"); }
 
     
 
-    Serial.println("[DEBUG] Attente tirette... ");
+    Serial.println("[DEBUG] Attente tirette");
     while (!digitalRead(tirette_pin)) {}
     Serial.println("[DEBUG] START");
     delay(5);
@@ -136,7 +141,7 @@ void loop() {
     if (isBlocked()) {
         analogWrite(pin_en_R, 0);
         analogWrite(pin_en_L, 0);
-        Serial.println("Stop...");
+        Serial.println("[DEBUG] isBlocked");
         delay(3000);
         if (isBlocked()) {
             pullOut();
