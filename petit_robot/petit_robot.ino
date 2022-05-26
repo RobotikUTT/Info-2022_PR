@@ -24,7 +24,8 @@
 
 #define tirette_pin 8
 
-#define team_pin 
+#define team_pin 9
+int team_side = 0; // 0 paar défaut, 0 coté jaune, 1 coté violet
 
 SoftwareSerial nano(11, 10); // line série nano et méga
 
@@ -41,7 +42,7 @@ void setup() {
     // initialize the lcd 
     // Print a message to the LCD.
     lcd.backlight();
-    lcd.setCursor(3,0);
+    lcd.setCursor(3,0); // x, y, x entre 0 et 15, y = 0 ou 1
     lcd.print("Robotik'UTT");
     
 
@@ -51,6 +52,19 @@ void setup() {
     pinMode(pin_eye_L, INPUT);
     pinMode(pin_eye_R, INPUT);
     pinMode(tirette_pin, INPUT_PULLUP);
+
+    // Interrupteur choix équipe
+    pinMode(team_pin, INPUT_PULLUP);
+
+    // Choix du coté
+    lcd.setCursor(0,1);
+    lcd.print("[DBG] choix cote"); // DBG pour debug
+    delay(7000) 
+    if(digitalRead(team_pin) == TRUE){
+      team_side = 1;
+      } // sinon par défaut à 0
+
+    
 
     Serial.println("[DEBUG] Attente tirette... ");
     while (!digitalRead(tirette_pin)) {}
@@ -82,7 +96,7 @@ void setup() {
         delay(100);
     }*/
 
-    findLine(); // procédure robot va chercher la ligne
+    findLine(); // procédure robot va chercher la ligne (1 fois)
 }
 
 void loop() {
