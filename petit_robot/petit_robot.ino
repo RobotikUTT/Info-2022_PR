@@ -7,8 +7,8 @@
 // "Petit Robot", Robotik UTT, Coupe de France 2022
 
 //########### Pin configuration
-#define pin_eye_R A0
-#define pin_eye_L A1
+#define pin_eye_R A2
+#define pin_eye_L A3
 
 //########### Motor pins
 
@@ -113,7 +113,7 @@ void setup() {
     findLine(); // procédure robot va chercher la ligne (1 fois)
 }
 
-void loop() {
+void loop() { // on n'entre pas dans la loop pour le début
     int sensor_R = analogRead(pin_eye_R);
     int sensor_L = analogRead(pin_eye_L);
 
@@ -229,44 +229,28 @@ void findLine() {// DEBUG-FDL
     Serial.println("[DEBUG-FDL] findLine");
     lcd.setCursor(0,1);
     lcd.print("[DBG] FDL START ");
-    analogWrite(pin_en_R, 100); // 80 rame, 100 va vite, 255 le max, non linéaire, speed à 0 pour l'arreter  PWM
-    analogWrite(pin_en_L, 100);
+    //analogWrite(pin_en_R, 100); // 80 rame, 100 va vite, 255 le max, non linéaire, speed à 0 pour l'arreter  PWM
+    //analogWrite(pin_en_L, 100);
 
     int aligned = 0; // =0 si non aligné, 1 si aligné sur bande noire
-    // TODO la suite
-    while (true) {
-        int sensor_R = analogRead(pin_eye_R);
-        int sensor_L = analogRead(pin_eye_L);
+    int trigger = 500; // attention au passage sur Tags Aruco
+    
+    // intitialisation capteurs
+    int sensor_R = analogRead(pin_eye_R);
+    int sensor_L = analogRead(pin_eye_L);
+    while (sensor_R > trigger and sensor_L > trigger){
+        sensor_R = analogRead(pin_eye_R);
+        sensor_L = analogRead(pin_eye_L);
 
-        /* if (other >= 0) {
-            if (analogRead(other) < 500) {
-                Serial.println("Sequence terminee");
-                digitalWrite(pin_a_R, HIGH);
-                digitalWrite(pin_b_R, LOW);
-                digitalWrite(pin_a_L, HIGH);
-                digitalWrite(pin_b_L, LOW);
-                analogWrite(pin_en_R, 120);
-                analogWrite(pin_en_L, 100);
-                delay(200);
-                break;
-            }
-        } else {
-            if (sensor_L < 500) {
-                // analogWrite(pin_en_R, 100);
-                // analogWrite(pin_en_L, 80);
-                other = pin_eye_R;
-                Serial.println("[DEBUG-FDL] Trouve ligne gauche");
-            }
-            if (sensor_R < 500) {
-                // analogWrite(pin_en_R, 80);
-                // analogWrite(pin_en_L, 80);
-                other = pin_eye_L;
-                Serial.println("Trouve ligne droite");
-                analogWrite(pin_en_L, 50);
-            }
-                
-        }*/
+        // Faire avancer le robot tout droit
     }
+    // TODO faire symétrie coté Violet
+    if (sensor_R < 500){
+      // L avance puis suivi ligne
+      }
+    else if (sensor_L < 500){
+      // suivi ligne
+      }
 }
 
 int sensorRMotorTF(int sensor_L, int sensor_R) { // fonction de transfert proportionnel: valeurs capteurs -> valeurs moteurs
