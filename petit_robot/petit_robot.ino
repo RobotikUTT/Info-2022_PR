@@ -1,21 +1,20 @@
 #include <Arduino.h>
 #include <Encoder.h>
-#include <SoftwareSerial.h>
+#include <SoftwareSerial.h> // Communication nano-mega
+#include <LiquidCrystal_I2C.h> // écran LCD
 
-// Test de suiveur de ligne deux capteurs CNY70
-// "Petit Robot", Robotik UTT, Coupe de france 2022
+// suiveur de ligne: capteurs CNY70
+// "Petit Robot", Robotik UTT, Coupe de France 2022
 
-// Pin configuration
+//########### Pin configuration
 #define pin_eye_R A0
 #define pin_eye_L A1
 
-// Motor pins
+//########### Motor pins
 
 // a pour reculer, b pour avancer
 #define pin_en_L 2 // enable
 // PIN ENABLE mais c'est du PWM
-
-
 
 #define pin_a_L 5 // a=1 et b=0  AVANCER et b=1 et a=0 pour RECULER
 #define pin_b_L 6
@@ -25,18 +24,35 @@
 
 #define tirette_pin 8
 
+#define team_pin 
+
 SoftwareSerial nano(11, 10); // line série nano et méga
+
+LiquidCrystal_I2C lcd(0x27,16,2);  // set the LCD address to 0x27 for a 16 chars and 2 line display
+// si l'adresse n'est pas la bonne, utiliser le script i2c pour récupérer l'adresse
+// Cablage GND, 5V, SDA, SCL
 
 void setup() {
     Serial.begin(9600);
 
+    // ############# LCD  
+    lcd.init();
+    Serial.println("[DEBUG] Intitialisation");                      
+    // initialize the lcd 
+    // Print a message to the LCD.
+    lcd.backlight();
+    lcd.setCursor(3,0);
+    lcd.print("Robotik'UTT");
+    
+
+    // Initialisation motor pin ?
     for (int i = 2; i <= 7; i++)
         pinMode(i, OUTPUT);
     pinMode(pin_eye_L, INPUT);
     pinMode(pin_eye_R, INPUT);
     pinMode(tirette_pin, INPUT_PULLUP);
 
-    Serial.print("[DEBUG] Attente tirette... ");
+    Serial.println("[DEBUG] Attente tirette... ");
     while (!digitalRead(tirette_pin)) {}
     Serial.println("[DEBUG] START");
     delay(5);
@@ -181,7 +197,7 @@ void SeRetourner () { // Se retourner sur la ligne
 void findLine() {
     int other = -1; // variable pour attendre quel capteur est le second à toucher la ligne
 
-    Serial.println("Sequence commencee");
+    Serial.println("[DEBUG] findLine");
     analogWrite(pin_en_R, 100);
     analogWrite(pin_en_L, 100);
 
