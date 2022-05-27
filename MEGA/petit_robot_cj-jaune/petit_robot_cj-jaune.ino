@@ -45,8 +45,13 @@ int sensor_L = analogRead(pin_eye_L);
 
 //limite de detation de couleur : moins de triger : noir
 int trigger = 500; // attention au passage sur Tags Aruco
-int velocity = 80;//vitesse moyenne
+
+
+int velocityR = 80;//vitesse moyenne
+int velocityL= 80;
 int reduir_vitesse = 0;//reduire une roue en mode super shlage si on est vilet
+
+int velocity = 80; // a debug puis delete
 
 SoftwareSerial nano(11, 10); // line série nano et méga
 
@@ -82,7 +87,7 @@ void setup() {
     lcd.setCursor(0,1);
     lcd.print("[DBG] choix cote"); // DBG pour debug
     Serial.println("[DBG] choix cote");
-    delay(7000);
+    delay(2000);
     if(digitalRead(team_pin) == true){
       team_side = 1;
       Serial.println("[DEBUG] Yellow");
@@ -96,7 +101,7 @@ void setup() {
       }
 
     
-    delay(5000);
+    delay(2000);
     Serial.println("[DEBUG] Attente tirette");
     Serial.print("Valeur tirette (0 appuyé | 1 relaché) :  ");
     lcd.setCursor(0,1);
@@ -155,9 +160,24 @@ void onpasseleshomologations(){
   // ou TurnLeft Purple puis FWD 120cm
     lcd.setCursor(0,1);
     lcd.print("DBG HOMOLOGATION");
-
-  timer_move = 1000;
+// AVANCER
+  timer_move = 2550; // pour 86cm
+  velocityL = 74;
+  velocityR = 87;
   Forward(); // on doit avancer sur 86cm - la rotation
+
+// TOURNER
+  timer_move = 2000; // virage
+  velocityL = 80;
+  // velocityR = 90;
+  TurnRight();
+
+// AVANCER 2 
+  timer_move = 3330; // pour 86cm
+  velocityL = 75;
+  velocityR = 89;
+  Forward(); // on doit avancer sur 86cm - la rotation
+  while(1);
 
   // timer_move = à définir
   // TurnRight(); 45° // voir le décalage
@@ -166,38 +186,7 @@ void onpasseleshomologations(){
   //Forward(); // avancer sur 120cm
 }
 
-void cj_yellow(){
-    // ####### Suivi de ligne // ancien loop 
-    sensor_R = analogRead(pin_eye_R);
-    sensor_L = analogRead(pin_eye_L);
-    lcd.setCursor(0,1);
-    lcd.print("droit          ");
-    Forward();
-    //lcd.print("L" + sensor_L);
-    //Serial.println("R" +sensor_R);
-    //Serial.println(sensor_L);
-    //while(true){
-    //  LineFollower();
-    //}
-//    test_4simple_mov();
-    sensor_R = analogRead(pin_eye_R);
-    sensor_L = analogRead(pin_eye_L);
-    while(sensor_L<500){// ?
-      sensor_R = analogRead(pin_eye_R);
-    sensor_L = analogRead(pin_eye_L);
-      TurnLeft();
-    }
-    while(sensor_R<500){
-      sensor_R = analogRead(pin_eye_R);
-    sensor_L = analogRead(pin_eye_L);
-      TurnRight();
-    }
-    Serial.println(sensor_L);
-    Serial.println(sensor_R);
-    
-    Serial.println("");
-    
-}
+
 
 // #################### Below movement functions
 
@@ -213,8 +202,8 @@ void Forward(){
     digitalWrite(pin_b_L, HIGH);
     digitalWrite(pin_a_R, LOW);
     digitalWrite(pin_b_R, HIGH);
-    analogWrite(pin_velo_R, velocity-reduir_vitesse);
-    analogWrite(pin_velo_L, velocity);
+    analogWrite(pin_velo_R, velocityR);
+    analogWrite(pin_velo_L, velocityL);
 
     delay(timer_move);
 
@@ -262,7 +251,7 @@ void TurnRight(){
     // JOB TODO
     digitalWrite(pin_a_L, LOW);
     digitalWrite(pin_b_L, HIGH);
-    analogWrite(pin_velo_L, velocity+40);
+    analogWrite(pin_velo_L, velocityL);
 
     delay(timer_move);
 
@@ -455,4 +444,38 @@ void count_line(){  // non utilisé actuellement, stratégie L1,2,3,4,5
   {
     num_ligne_R = 4;
   }
+}
+
+
+void cj_yellow(){
+    // ####### Suivi de ligne // ancien loop 
+    sensor_R = analogRead(pin_eye_R);
+    sensor_L = analogRead(pin_eye_L);
+    lcd.setCursor(0,1);
+    lcd.print("droit          ");
+    Forward();
+    //lcd.print("L" + sensor_L);
+    //Serial.println("R" +sensor_R);
+    //Serial.println(sensor_L);
+    //while(true){
+    //  LineFollower();
+    //}
+//    test_4simple_mov();
+    sensor_R = analogRead(pin_eye_R);
+    sensor_L = analogRead(pin_eye_L);
+    while(sensor_L<500){// ?
+      sensor_R = analogRead(pin_eye_R);
+    sensor_L = analogRead(pin_eye_L);
+      TurnLeft();
+    }
+    while(sensor_R<500){
+      sensor_R = analogRead(pin_eye_R);
+    sensor_L = analogRead(pin_eye_L);
+      TurnRight();
+    }
+    Serial.println(sensor_L);
+    Serial.println(sensor_R);
+    
+    Serial.println("");
+    
 }
