@@ -221,11 +221,11 @@ bool delay_check_coll(uint32_t duration){
         lcd.print("[DBG] Col ");
         lcd.setCursor(10, 1);
         lcd.print(message);
-        Serial.print("[DEBUG] Front sonar");
+        Serial.print("[DBG] Col detected");
         Serial.println(message);
         analogWrite(pin_velo_R, 0);
         analogWrite(pin_velo_L, 0);
-        return false;
+        return true;
       }
     }
   }
@@ -251,7 +251,7 @@ void Forward(int timer_move) {
     analogWrite(pin_velo_R, velocityR);
     analogWrite(pin_velo_L, velocityL);
 
-    if (!delay_check_coll(timer_move)) {
+    if (delay_check_coll(timer_move)) {
       analogWrite(pin_velo_R, 0);
       analogWrite(pin_velo_L, 0);
     }
@@ -265,8 +265,8 @@ void Forward2(int timer_move, int timer_inhib){
   // Permet d'avancer sur courte distance
     // DEBUG
     lcd.setCursor(0,1);
-    lcd.print("[DBG] Forward   ");
-    Serial.println("[DEBUG-FWD] Forward");
+    lcd.print("[DBG] Forward 2 ");
+    Serial.println("[DEBUG-FWD] Forward 2");
 
     // JOB
     digitalWrite(pin_a_L, LOW);
@@ -276,7 +276,7 @@ void Forward2(int timer_move, int timer_inhib){
     analogWrite(pin_velo_R, velocityR);
     analogWrite(pin_velo_L, velocityL);
 
-    if (!delay_check_coll(timer_move)) {
+    if (delay_check_coll(timer_move)) {
       analogWrite(pin_velo_R, 0);
       analogWrite(pin_velo_L, 0);
     }
@@ -330,7 +330,7 @@ void TurnRight(int timer_move){
     digitalWrite(pin_b_L, HIGH);
     analogWrite(pin_velo_L, velocityL);
 
-    if (!delay_check_coll(timer_move)) {
+    if (delay_check_coll(timer_move)) {
       analogWrite(pin_velo_L, 0);
     }
 
