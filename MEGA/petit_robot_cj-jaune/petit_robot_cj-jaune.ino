@@ -53,6 +53,8 @@ int reduir_vitesse = 0;//reduire une roue en mode super shlage si on est vilet
 
 int velocity = 80; // a debug puis delete
 
+
+// Variables pour le chronomètre
 unsigned long MS;
 unsigned long start;
 unsigned long stop_;
