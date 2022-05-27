@@ -276,8 +276,10 @@ void Forward2(int timer_move, int timer_inhib){
     analogWrite(pin_velo_R, velocityR);
     analogWrite(pin_velo_L, velocityL);
 
-    delay_check_coll(timer_move);
-    
+    if (!delay_check_coll(timer_move)) {
+      analogWrite(pin_velo_R, 0);
+      analogWrite(pin_velo_L, 0);
+    }
     delay(timer_inhib);
     // change timer_move
 
