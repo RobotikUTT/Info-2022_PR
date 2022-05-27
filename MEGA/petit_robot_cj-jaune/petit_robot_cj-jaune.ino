@@ -199,7 +199,7 @@ void onpasseleshomologations(){
   velocityL = 75;
   velocityR = 89;
   Forward2(2000, 1330); // on doit avancer sur 86cm - la rotation
-  break; // FIN 
+  // FIN 
 
 }
 
