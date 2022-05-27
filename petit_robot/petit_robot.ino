@@ -84,6 +84,8 @@ void setup() {
     Serial.println(digitalRead(tirette_pin));
     while (!digitalRead(tirette_pin)) {}
     Serial.println("[DEBUG] START");
+    lcd.setCursor(0,1);
+    lcd.print("[DBG]  START    ");
     delay(5);
 
     // par défaut on avance
@@ -116,21 +118,16 @@ void setup() {
 
 void loop(){
   // ####### TESTS
-      digitalWrite(pin_a_L, HIGH);
-    digitalWrite(pin_b_L, LOW);
-    digitalWrite(pin_a_R, HIGH);
-    digitalWrite(pin_b_R, LOW);
-    analogWrite(pin_en_R, 100);
-    analogWrite(pin_en_L, 100);
 
-    delay(5000);
+  // test_4simple_mov();
 
-    analogWrite(pin_en_R, 0);
-    analogWrite(pin_en_L, 0);
+  test_left();
+
+  
   }
 
 
-// ########### Own functions
+// ########### Own functions ALL BELOW THIS
 
 
 
@@ -264,8 +261,47 @@ void findLine() {// DEBUG-FDL
       //}
 }
 
-void LineFollower(){
+void LineFollower(){ // need the argument
     // Le but est de suivre la ligne jusqu'à ??? un obstacle
 
-    // TODO
+    // TODO Vendredi
 }
+
+void test_4simple_mov(){
+  // Permet de tester les 4 mouvements simples des moteurs: Forward, Backward, TurnLeft, TurnRight
+    Backward();
+    delay(5000);
+    Forward();
+    delay(5000);
+    TurnRight();
+    delay(5000);
+    TurnLeft();
+    delay(5000);
+  }
+
+
+// ############## TEST functions only
+
+void test_left(){
+  // Permet de reculer
+
+    // DEBUG
+    lcd.setCursor(0,1);
+    lcd.print("[DBG] TEST      ");
+    Serial.println("[DEBUG-TEST] test_turn left");
+
+
+    // JOB
+    digitalWrite(pin_a_L, LOW);
+    digitalWrite(pin_b_L, HIGH);
+    digitalWrite(pin_a_R, LOW);
+    digitalWrite(pin_b_R, LOW);
+    analogWrite(pin_en_R, 0);
+    analogWrite(pin_en_L, 100);
+
+    delay(5000);
+
+    // Arret moteur
+    analogWrite(pin_en_R, 0);
+    analogWrite(pin_en_L, 0);
+  }
