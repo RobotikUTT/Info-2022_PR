@@ -225,7 +225,7 @@ void delay_check_coll(uint32_t duration){
         Serial.println(message);
         analogWrite(pin_velo_R, 0);
         analogWrite(pin_velo_L, 0);
-        while(true);
+        while(true); // ne fait absolument plus rien si collision 
       }
     }
   }
