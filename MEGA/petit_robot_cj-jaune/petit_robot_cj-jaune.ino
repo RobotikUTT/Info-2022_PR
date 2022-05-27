@@ -223,6 +223,9 @@ void delay_check_coll(uint32_t duration){
         lcd.print(message);
         Serial.print("[DBG] Col detected");
         Serial.println(message);
+        analogWrite(pin_velo_R, 0);
+        analogWrite(pin_velo_L, 0);
+        while(true);
       }
     }
   }
