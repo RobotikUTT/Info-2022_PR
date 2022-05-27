@@ -205,7 +205,7 @@ void onpasseleshomologations(){
 
 }
 
-bool delay_check_coll(uint32_t duration){
+void delay_check_coll(uint32_t duration){
   // Création d'une fonction qui remplace delay pour check collision ultrasons
   uint32_t start_delay = millis();
   while(millis() - start_delay < duration){
@@ -223,13 +223,9 @@ bool delay_check_coll(uint32_t duration){
         lcd.print(message);
         Serial.print("[DBG] Col detected");
         Serial.println(message);
-        analogWrite(pin_velo_R, 0);
-        analogWrite(pin_velo_L, 0);
-        return true;
       }
     }
   }
-  return true; // vrai s'est bien passé, false collision/soucis
 }
 
 
@@ -251,10 +247,7 @@ void Forward(int timer_move) {
     analogWrite(pin_velo_R, velocityR);
     analogWrite(pin_velo_L, velocityL);
 
-    if (delay_check_coll(timer_move)) {
-      analogWrite(pin_velo_R, 0);
-      analogWrite(pin_velo_L, 0);
-    }
+    delay_check_coll(timer_move);
 
     // Arret moteur
     analogWrite(pin_velo_R, 0);
@@ -276,10 +269,8 @@ void Forward2(int timer_move, int timer_inhib){
     analogWrite(pin_velo_R, velocityR);
     analogWrite(pin_velo_L, velocityL);
 
-    if (delay_check_coll(timer_move)) {
-      analogWrite(pin_velo_R, 0);
-      analogWrite(pin_velo_L, 0);
-    }
+    delay_check_coll(timer_move);
+
     delay(timer_inhib);
     // change timer_move
 
@@ -330,9 +321,7 @@ void TurnRight(int timer_move){
     digitalWrite(pin_b_L, HIGH);
     analogWrite(pin_velo_L, velocityL);
 
-    if (delay_check_coll(timer_move)) {
-      analogWrite(pin_velo_L, 0);
-    }
+    delay_check_coll(timer_move);
 
     // Arret moteur
     analogWrite(pin_velo_R, 0); // par sécurité on arrête les 2
