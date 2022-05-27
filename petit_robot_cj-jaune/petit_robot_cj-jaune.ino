@@ -3,6 +3,11 @@
 #include <SoftwareSerial.h> // Communication nano-mega
 #include <LiquidCrystal_I2C.h> // écran LCD
 
+/*
+TODO: stratégie de débug/ de commentaires
+*/
+
+
 // suiveur de ligne: capteurs CNY70
 // "Petit Robot", Robotik UTT, Coupe de France 2022
 
@@ -139,7 +144,7 @@ void setup() {
 }
 
 void loop(){
-  // ####### TESTS
+  // ####### Suivi de ligne
     sensor_R = analogRead(pin_eye_R);
     sensor_L = analogRead(pin_eye_L);
     lcd.setCursor(0,1);
@@ -332,24 +337,24 @@ void findLine() {// DEBUG-FDL
 
     if (team_side == 0) //JAUNE
     {
-      Serial.println("[DBG] cherche 1");
+      Serial.println("[DBG-FDL] search 1");
       lcd.setCursor(0,1);
-      lcd.print("[DBG] cherche 1");
+      lcd.print("[DBG-FDL] search1");
       while(num_ligne_R != 1){//tant que R touche pas noir, avancer
           Forward();
           count_line();
       }
-      Serial.println("[DBG] cherche 4");
+      Serial.println("[DBG-FDL] search 4");
       lcd.setCursor(0,1);
-      lcd.print("[DBG] cherche 4 ");
+      lcd.print("[DBG-FDL] search4");
       //cas dépassement noir par R à gérer TODO --
       while(num_ligne_L != 4){//tant que L pas à l'exterieur, tourner
           TurnRight();
           count_line();
       }
-      Serial.println("[DBG] cherche enc1");
+      Serial.println("[DBG] search enc1");
       lcd.setCursor(0,1);
-      lcd.print("[DBG] cherche enc1 ");
+      lcd.print("[DBG] search enc1 ");
       while(sensor_R < trigger and sensor_L < trigger){//tant que pas l'autre aussi sur blanc, tourne sur sois
           SpinRight();
       }
@@ -394,7 +399,7 @@ void test_4simple_mov(){
   }
 }
 
-void count_line(){
+void count_line(){  // non utilisé actuellement, stratégie L1,2,3,4,5
   //compte le numero de la ligne sur laquelle est le capteur
   sensor_R = analogRead(pin_eye_R);
   sensor_L = analogRead(pin_eye_L);
