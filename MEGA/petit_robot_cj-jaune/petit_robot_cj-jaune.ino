@@ -144,7 +144,30 @@ void setup() {
 }
 
 void loop(){
-  // ####### Suivi de ligne
+  onpasseleshomologations();
+  }
+
+
+// ########### Own functions ALL BELOW THIS
+
+void onpasseleshomologations(){
+  // fonction qui a pour unique but de passer les homologations: strat ~86cm FWD puis TurnRight yellow
+  // ou TurnLeft Purple puis FWD 120cm
+    lcd.setCursor(0,1);
+    lcd.print("DBG HOMOLOGATION");
+
+  timer_move = 1000;
+  Forward(); // on doit avancer sur 86cm - la rotation
+
+  // timer_move = à définir
+  // TurnRight(); 45° // voir le décalage
+
+  // timer_move = à définir
+  //Forward(); // avancer sur 120cm
+}
+
+void cj_yellow(){
+    // ####### Suivi de ligne // ancien loop 
     sensor_R = analogRead(pin_eye_R);
     sensor_L = analogRead(pin_eye_L);
     lcd.setCursor(0,1);
@@ -174,13 +197,7 @@ void loop(){
     
     Serial.println("");
     
-
-  }
-
-
-// ########### Own functions ALL BELOW THIS
-
-
+}
 
 // #################### Below movement functions
 

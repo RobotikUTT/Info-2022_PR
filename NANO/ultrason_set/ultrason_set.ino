@@ -14,8 +14,8 @@ It was in a created repo, does it works ? It must be saved
 #define NB_CAPTORS 4
 #define COMMUNICATION_PIN A0
 
-const uint8_t trigger_pins[NB_CAPTORS]{4, 5, 6, 7};
-const uint8_t echo_pins[NB_CAPTORS]{8, 9, 10, 11};
+const uint8_t trigger_pins[NB_CAPTORS]{2, 5, 8, 11};
+const uint8_t echo_pins[NB_CAPTORS]{3, 6, 9, 12};
 uint8_t message{0};
 SoftwareSerial write_serial(2, 3);
 
@@ -25,6 +25,8 @@ inline double get_distance(int captor_index);
 
 void setup() {
     write_serial.begin(9600);
+    Serial.begin(9600);
+    Serial.println("[DEBUG] Initialization");
 
     /* initialize captors */
     for (int i = 0; i < NB_CAPTORS; ++i) {
@@ -36,14 +38,35 @@ void setup() {
 
 
 void loop() {
-    for (int i = 4; i < NB_CAPTORS + 4; ++i) {
+  
+    /*for (int i = 4; i < NB_CAPTORS + 4; ++i) {
         const double distance = get_distance(i);
-        if (distance < 300)
+        if (distance < 300){
             message |= 0b1 << i;
-        else
+        }
+        else{
             message &= ~(0b1 << i);
         write_serial.write(message);
-    }
+        }
+        //Serial.println(message); // tj = 240
+        Serial.println(distance);
+    } */
+      digitalWrite(TRIGGER_PIN, HIGH);
+      delayMicroseconds(10);
+      digitalWrite(TRIGGER_PIN, LOW);
+      
+      /* 2. Mesure le temps entre l'envoi de l'impulsion ultrasonique et son écho (si il existe) */
+      long measure = pulseIn(ECHO_PIN, HIGH, MEASURE_TIMEOUT);
+       
+      /* 3. Calcul la distance à partir du temps mesuré */
+      float distance_mm = measure / 2.0 * SOUND_SPEED;
+       
+      /* Affiche les résultats en mm, cm et m */
+      Serial.print(F("Distance: "));
+      Serial.print(distance_mm);
+      Serial.print(F("mm ("));
+      Serial.print(distance_mm / 10.0, 2);
+      Serial.print(F("cm, "));
 }
 
 /**
