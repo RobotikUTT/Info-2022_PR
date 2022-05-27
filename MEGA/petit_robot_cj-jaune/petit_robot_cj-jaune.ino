@@ -164,6 +164,8 @@ void loop(){
   // penser à print le nombre de points réalisés
 
   // On rattrape le chrono après notre séquence
+  lcd.setCursor(0, 1);
+  lcd.print("[DBG] STOPWATCH ");
   while(MS<100000){
     MS = millis()-start;
     Serial.println(MS);
