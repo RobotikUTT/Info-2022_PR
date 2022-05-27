@@ -13,14 +13,15 @@
 //########### Motor pins
 
 // a pour reculer, b pour avancer
-#define pin_en_L 2 // enable
+#define pin_en_L 2 // enable, permet de set la vitesse
+#define pin_en_R 7
 // PIN ENABLE mais c'est du PWM
 
 #define pin_a_L 5 // a=1 et b=0  AVANCER et b=1 et a=0 pour RECULER
 #define pin_b_L 6
 #define pin_a_R 3
 #define pin_b_R 4
-#define pin_en_R 7
+
 
 #define tirette_pin 8
 
@@ -129,8 +130,109 @@ void loop(){
   }
 
 
+// ########### Own functions
 
 
+
+// #################### Below movement functions
+
+void Forward(){
+  // Permet d'avancer sur courte distance
+
+    // DEBUG
+    lcd.setCursor(0,1);
+    lcd.print("[DBG] Forward   ");
+    Serial.println("[DEBUG-FWD] Forward");
+
+    // JOB
+    digitalWrite(pin_a_L, HIGH);
+    digitalWrite(pin_b_L, LOW);
+    digitalWrite(pin_a_R, HIGH);
+    digitalWrite(pin_b_R, LOW);
+    analogWrite(pin_en_R, 100);
+    analogWrite(pin_en_L, 100);
+
+    delay(5000);
+
+    // Arret moteur
+    analogWrite(pin_en_R, 0);
+    analogWrite(pin_en_L, 0);
+  }
+
+void Backward(){
+  // Permet de reculer
+
+    // DEBUG
+    lcd.setCursor(0,1);
+    lcd.print("[DBG] Backward   ");
+    Serial.println("[DEBUG-BWD] Backward");
+
+
+    // JOB
+    digitalWrite(pin_a_L, LOW);
+    digitalWrite(pin_b_L, HIGH);
+    digitalWrite(pin_a_R, LOW);
+    digitalWrite(pin_b_R, HIGH);
+    analogWrite(pin_en_R, 100);
+    analogWrite(pin_en_L, 100);
+
+    delay(5000);
+
+    // Arret moteur
+    analogWrite(pin_en_R, 0);
+    analogWrite(pin_en_L, 0);
+  }
+
+
+// Rotations faite en bloquant un moteur
+
+void TurnRight(){
+  // Tourne à droite
+
+    // DEBUG
+    lcd.setCursor(0,1);
+    lcd.print("[DBG] TurnRight ");
+    Serial.println("[DEBUG-TR] TurnRight");
+
+
+    // JOB TODO
+    digitalWrite(pin_a_L, HIGH);
+    digitalWrite(pin_b_L, LOW);
+    digitalWrite(pin_a_R, LOW);
+    digitalWrite(pin_b_R, LOW);
+    analogWrite(pin_en_L, 100);
+
+    delay(5000);
+
+    // Arret moteur
+    analogWrite(pin_en_R, 0); // par sécurité on arrête les 2
+    analogWrite(pin_en_L, 0);
+  }
+
+void TurnLeft(){
+  // Tourne à gauche
+
+    // DEBUG
+    lcd.setCursor(0,1);
+    lcd.print("[DBG] TurnLeft ");
+    Serial.println("[DEBUG-TL] TurnLeft");
+
+    // JOB TODO
+    digitalWrite(pin_a_L, LOW);
+    digitalWrite(pin_b_L, LOW);
+    digitalWrite(pin_a_R, HIGH);
+    digitalWrite(pin_b_R, LOW);
+    analogWrite(pin_en_R, 100);
+
+    delay(5000);
+
+    // Arret moteur
+    analogWrite(pin_en_R, 0); // par sécurité on arrête les 2
+    analogWrite(pin_en_L, 0);
+  }
+
+
+// ################ Advanced functions
 
 void findLine() {// DEBUG-FDL
     //int other = -1; // variable pour attendre quel capteur est le second à toucher la ligne
@@ -162,30 +264,8 @@ void findLine() {// DEBUG-FDL
       //}
 }
 
-void Forward(){
-  // Permet d'avancer sur courte distance
-  }
+void LineFollower(){
+    // Le but est de suivre la ligne jusqu'à ??? un obstacle
 
-void Backward(){
-  // Permet de reculer
-
-    digitalWrite(pin_a_L, HIGH);
-    digitalWrite(pin_b_L, LOW);
-    digitalWrite(pin_a_R, HIGH);
-    digitalWrite(pin_b_R, LOW);
-    analogWrite(pin_en_R, 100);
-    analogWrite(pin_en_L, 100);
-
-    delay(5000);
-
-    analogWrite(pin_en_R, 0);
-    analogWrite(pin_en_L, 0);
-  }
-
-void TurnRight(){
-  // Tourne à droite
-  }
-
-void TurnLeft(){
-  // Tourne à gauche
-  }
+    // TODO
+}
