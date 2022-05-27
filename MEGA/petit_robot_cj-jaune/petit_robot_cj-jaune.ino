@@ -159,7 +159,7 @@ void loop(){
 //    test_4simple_mov();
     sensor_R = analogRead(pin_eye_R);
     sensor_L = analogRead(pin_eye_L);
-    while(sensor_L<500){
+    while(sensor_L<500){// ?
       sensor_R = analogRead(pin_eye_R);
     sensor_L = analogRead(pin_eye_L);
       TurnLeft();
