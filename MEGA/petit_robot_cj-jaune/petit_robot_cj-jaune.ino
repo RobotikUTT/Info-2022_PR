@@ -59,7 +59,8 @@ unsigned long MS;
 unsigned long start;
 unsigned long stop_;
 
-SoftwareSerial nano(11, 10); // line série nano et méga
+SoftwareSerial nano(10, 11); // line série nano et méga
+uint8_t message = 0; // var to stock message received from nano
 
 LiquidCrystal_I2C lcd(0x27,16,2);  // set the LCD address to 0x27 for a 16 chars and 2 line display
 // si l'adresse n'est pas la bonne, utiliser le script i2c pour récupérer l'adresse
@@ -185,19 +186,19 @@ void onpasseleshomologations(){
   timer_move = 2550; // pour 86cm
   velocityL = 74;
   velocityR = 87;
-  Forward(); // on doit avancer sur 86cm - la rotation
+  Forward(timer_move); // on doit avancer sur 86cm - la rotation
 
 // TOURNER
   timer_move = 2000; // virage
   velocityL = 80;
   // velocityR = 90;
-  TurnRight();
+  TurnRight(timer_move);
 
 // AVANCER 2 
   timer_move = 3330; // pour 86cm
   velocityL = 75;
   velocityR = 89;
-  Forward(); // on doit avancer sur 86cm - la rotation
+  Forward2(2000, 1330); // on doit avancer sur 86cm - la rotation
   while(1); // FIN 
 
 }
@@ -207,6 +208,12 @@ bool delay_check_coll(uint32_t duration){
   uint32_t start_delay = millis();
   while(millis() - start_delay < duration){
     // check ultrasons pour savoir ce que l'on fait
+    message = nano.read(); // stock what is read from serial in var
+    if (bitRead(message, 2) == 1 || bitRead(message, 3) == 1) { // test if something was detected on either of the front captors
+      lcd.setCursor(0, 1);
+      lcd.print("[DBG] Collision ");
+      return false;
+    }
   }
   return true; // vrai s'est bien passé, false collision/soucis
 }
@@ -215,7 +222,7 @@ bool delay_check_coll(uint32_t duration){
 
 // #################### Below movement functions
 
-void Forward(){
+void Forward(int timer_move) {
   // Permet d'avancer sur courte distance
     // DEBUG
     lcd.setCursor(0,1);
@@ -230,12 +237,41 @@ void Forward(){
     analogWrite(pin_velo_R, velocityR);
     analogWrite(pin_velo_L, velocityL);
 
-    delay(timer_move);
+    if (!delay_check_coll(timer_move)) {
+      analogWrite(pin_velo_R, 0);
+      analogWrite(pin_velo_L, 0);
+    }
 
     // Arret moteur
     analogWrite(pin_velo_R, 0);
     analogWrite(pin_velo_L, 0);
   }
+
+void Forward2(int timer_move, int timer_inhib){
+  // Permet d'avancer sur courte distance
+    // DEBUG
+    lcd.setCursor(0,1);
+    lcd.print("[DBG] Forward   ");
+    Serial.println("[DEBUG-FWD] Forward");
+
+    // JOB
+    digitalWrite(pin_a_L, LOW);
+    digitalWrite(pin_b_L, HIGH);
+    digitalWrite(pin_a_R, LOW);
+    digitalWrite(pin_b_R, HIGH);
+    analogWrite(pin_velo_R, velocityR);
+    analogWrite(pin_velo_L, velocityL);
+
+    delay_check_coll(timer_move);
+    
+    delay(timer_inhib);
+    // change timer_move
+
+    // Arret moteur
+    analogWrite(pin_velo_R, 0);
+    analogWrite(pin_velo_L, 0);
+  }
+
 
 void Backward(){
   // Permet de reculer
@@ -264,7 +300,7 @@ void Backward(){
 
 // Rotations faite en bloquant un moteur
 
-void TurnRight(){
+void TurnRight(int timer_move){
   // Tourne à droite
 
     // DEBUG
@@ -278,13 +314,15 @@ void TurnRight(){
     digitalWrite(pin_b_L, HIGH);
     analogWrite(pin_velo_L, velocityL);
 
-    delay_check_coll(timer_move);
+    if (!delay_check_coll(timer_move)) {
+      analogWrite(pin_velo_L, 0);
+    }
 
     // Arret moteur
     analogWrite(pin_velo_R, 0); // par sécurité on arrête les 2
     analogWrite(pin_velo_L, 0);
   }
-
+/*
 void TurnLeft(){
   // Tourne à gauche
 
@@ -372,7 +410,7 @@ void findLine() {// DEBUG-FDL
       lcd.setCursor(0,1);
       lcd.print("[DBG-FDL] search1");
       while(num_ligne_R != 1){//tant que R touche pas noir, avancer
-          Forward();
+          Forward(timer_move);
           count_line();
       }
       Serial.println("[DBG-FDL] search 4");
@@ -504,3 +542,4 @@ void cj_yellow(){
     Serial.println("");
     
 }
+*/
