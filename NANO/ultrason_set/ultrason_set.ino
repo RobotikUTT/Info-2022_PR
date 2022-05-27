@@ -16,37 +16,16 @@ SoftwareSerial mega_serial(3, 4);
 
 void setup() {
   mega_serial.begin(9600);
+  Serial.begin(9600);
+  // initialize captors
+  for (int i = 0; i < NB_CAPTORS; ++i) {
+    pinMode(trigger_pins[i], OUTPUT);
+    digitalWrite(trigger_pins[i], LOW);
+    pinMode(echo_pins[i], INPUT);
   }
 }
 
-
 void loop() {
-    /*for (int i = 4; i < NB_CAPTORS + 4; ++i) {
-        const double distance = get_distance(i);
-        if (distance < 300){
-            message |= 0b1 << i;
-        }
-        else{
-            message &= ~(0b1 << i);
-        write_serial.write(message);
-        }
-        //Serial.println(message); // tj = 240
-        Serial.println(distance);
-    } */
-      digitalWrite(TRIGGER_PIN, HIGH);
-      delayMicroseconds(10);
-      digitalWrite(TRIGGER_PIN, LOW);
-      
-      /* 2. Mesure le temps entre l'envoi de l'impulsion ultrasonique et son écho (si il existe) */
-      long measure = pulseIn(ECHO_PIN, HIGH, MEASURE_TIMEOUT);
-       
-      /* 3. Calcul la distance à partir du temps mesuré */
-      float distance_mm = measure / 2.0 * SOUND_SPEED;
-       
-      /* Affiche les résultats en mm, cm et m */
-      Serial.print(F("Distance: "));
-      Serial.print(distance_mm);
-      Serial.print(F("mm ("));
   for (int i = 0; i < NB_CAPTORS; ++i) {
     const double distance = get_distance(i);
     if (distance != 0 && distance < 100) { // we take distance < 120
