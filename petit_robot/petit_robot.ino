@@ -75,7 +75,7 @@ void setup() {
       }
 
     
-
+    delay(5000);
     Serial.println("[DEBUG] Attente tirette");
     Serial.print("Valeur tirette (0 appuyé | 1 relaché) :  ");
     lcd.setCursor(0,1);
@@ -110,118 +110,27 @@ void setup() {
         delay(100);
     }*/
 
-    findLine(); // procédure robot va chercher la ligne (1 fois)
+    // findLine(); // procédure robot va chercher la ligne (1 fois) A DECOMMENTER
 }
 
-void loop() { // on n'entre pas dans la loop pour le début
-    int sensor_R = analogRead(pin_eye_R);
-    int sensor_L = analogRead(pin_eye_L);
-
-    Serial.print(sensor_L);
-    Serial.print(", ");
-    Serial.print(sensor_R);
-    Serial.print(", ");
-
-    int speed_R = sensorRMotorTF(sensor_L, sensor_R);
-    int speed_L = sensorLMotorTF(sensor_L, sensor_R);
-
-    Serial.print(speed_L);
-    Serial.print(", ");
-    Serial.println(speed_R);
-
-    if (speed_R < 0) {
-        speed_R = -speed_R;
-        digitalWrite(pin_a_R, HIGH);
-        digitalWrite(pin_b_R, LOW);
-    } else {
-        digitalWrite(pin_a_R, LOW);
-        digitalWrite(pin_b_R, HIGH);
-    }
-
-    if (speed_L < 0) {
-        speed_L = -speed_L;
-        digitalWrite(pin_a_L, HIGH);
-        digitalWrite(pin_b_L, LOW);
-    } else {
-        digitalWrite(pin_a_L, LOW);
-        digitalWrite(pin_b_L, HIGH);
-    }
-
-    if (isBlocked()) { // bloqué -> on l'arrete
-      // transformer la boucle en while quand on entre dedans
-        analogWrite(pin_en_R, 0);
-        analogWrite(pin_en_L, 0);
-        Serial.println("[DEBUG] isBlocked");
-        delay(3000);
-        if (isBlocked()) {
-            pullOut();
-        }
-    }
-
-
-    analogWrite(pin_en_R, speed_L);
-    analogWrite(pin_en_L, speed_R);
-
-    
-}
-
-bool isBlocked() { // Test pour savoir si les capteurs à ultrasons (limite de la nano actuelle
-    bool test = false;
-    int sensor = -1;
-    while (nano.available() > 0) {
-        sensor &= nano.read();
-        test = true;
-    }
-    if (!test)
-        sensor = 0;
-    return !!(sensor & 0b1100);
-}
-
-void pullOut() { // On recule
-    digitalWrite(pin_a_L, HIGH);
+void loop(){
+  // ####### TESTS
+      digitalWrite(pin_a_L, HIGH);
     digitalWrite(pin_b_L, LOW);
     digitalWrite(pin_a_R, HIGH);
     digitalWrite(pin_b_R, LOW);
     analogWrite(pin_en_R, 100);
     analogWrite(pin_en_L, 100);
 
-    delay(500);
+    delay(5000);
 
     analogWrite(pin_en_R, 0);
     analogWrite(pin_en_L, 0);
+  }
 
-    while(true); // Pour terminer le programme à l'infini
-}
 
-void SeRetourner () { // Se retourner sur la ligne, pas sans ligne
-    int DemiTour = 0;
-    while (DemiTour < 2) { 
-        int sensor_R = analogRead(pin_eye_R);
-        int sensor_L = analogRead(pin_eye_L);
-        
-        digitalWrite(pin_a_L, LOW);
-        digitalWrite(pin_b_L, HIGH);
-        digitalWrite(pin_a_R, HIGH);
-        digitalWrite(pin_b_R, LOW);
-        analogWrite(pin_en_R, 100);
-        analogWrite(pin_en_L, 100);
 
-        if ((DemiTour == 0)&&(sensor_R < 500) ){
-            DemiTour++;
-        }
-        if ((DemiTour == 1)&&(sensor_L < 500) ){
-            //realignement
-            digitalWrite(pin_a_R, HIGH);
-            digitalWrite(pin_b_R, LOW);
-            digitalWrite(pin_a_L, LOW);
-            digitalWrite(pin_b_L, HIGH);
-            analogWrite(pin_en_R, 100);
-            analogWrite(pin_en_L, 100);
-            delay(200);
-            DemiTour++;
-        }
-    }
-}
+
 
 void findLine() {// DEBUG-FDL
     //int other = -1; // variable pour attendre quel capteur est le second à toucher la ligne
@@ -245,54 +154,38 @@ void findLine() {// DEBUG-FDL
         // Faire avancer le robot tout droit
     }
     // TODO faire symétrie coté Violet
-    if (sensor_R < 500){
+    //if (sensor_R < 500){
       // L avance puis suivi ligne
-      }
-    else if (sensor_L < 500){
+      //}
+    //else if (sensor_L < 500){
       // suivi ligne
-      }
+      //}
 }
 
-int sensorRMotorTF(int sensor_L, int sensor_R) { // fonction de transfert proportionnel: valeurs capteurs -> valeurs moteurs
-  // Loop pour le suivi de ligne entree capteurs sortie moteur, A UTILISER
-    //return sensor_L * motor_speed / (1024);
+void Forward(){
+  // Permet d'avancer sur courte distance
+  }
 
-    if (sensor_L < 500)
-        return -60;
-    if (sensor_L > 500)
-        return 80;
-    //int bonus = (sensor_R < 850) ? 20 : 0;
-    //return (sensor_L - 800) / 2 + bonus;
-}
+void Backward(){
+  // Permet de reculer
 
-int sensorLMotorTF(int sensor_L, int sensor_R) {
-    //return sensor_R * motor_speed / (1024);
+    digitalWrite(pin_a_L, HIGH);
+    digitalWrite(pin_b_L, LOW);
+    digitalWrite(pin_a_R, HIGH);
+    digitalWrite(pin_b_R, LOW);
+    analogWrite(pin_en_R, 100);
+    analogWrite(pin_en_L, 100);
 
-    if (sensor_R < 500)
-        return -60;
-    if (sensor_R > 500)
-        return 80;
-    //int bonus = (sensor_L < 850) ? 20 : 0; // chgmt vitesse moteur exté virage de suivi ligne
-    //return (sensor_R - 800) / 2 + bonus;
-}
+    delay(5000);
 
-/*
-void forwardNmeters(float meters) { // erreur de compil
-    int init_left = left_wheel.readAndReset();
-    int init_right = right_wheel.readAndReset();
-    int ticks = meters * TICKS_PER_METER;
+    analogWrite(pin_en_R, 0);
+    analogWrite(pin_en_L, 0);
+  }
 
-    while (true) {
-        int right = right_wheel.read();
-        int left = left_wheel.read();
+void TurnRight(){
+  // Tourne à droite
+  }
 
-        int diff = right - left;
-
-        analogWrite(PIN_EN_L, MOTOR_SPEED + diff);
-        analogWrite(PIN_EN_R, MOTOR_SPEED - diff);
-
-        if (right >= ticks && right >= ticks)
-            break;
-    }
-}
-*/
+void TurnLeft(){
+  // Tourne à gauche
+  }
