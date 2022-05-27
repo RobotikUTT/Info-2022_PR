@@ -168,7 +168,7 @@ void loop(){
   lcd.print("[DBG] STOPWATCH ");
   while(MS<100000){
     MS = millis()-start;
-    Serial.println(MS);
+    //Serial.println(MS);
     }
   stop_ =millis();
   lcd.setCursor(0,1);
@@ -210,13 +210,19 @@ bool delay_check_coll(uint32_t duration){
   uint32_t start_delay = millis();
   while(millis() - start_delay < duration){
     // check ultrasons pour savoir ce que l'on fait
+    Serial.println("[DBG] nano.available door");
     if (nano.available() > 0) {
       message = nano.read(); // stock what is read from serial in var
+      Serial.print("[DEBUG] Front sonar");
+      Serial.println(message);
+      
       if (bitRead(message, 2) == 1 || bitRead(message, 3) == 1) { // test if something was detected on either of the front captors
         lcd.setCursor(0, 1);
         lcd.print("[DBG] Col ");
         lcd.setCursor(10, 1);
         lcd.print(message);
+        Serial.print("[DEBUG] Front sonar");
+        Serial.println(message);
         return false;
       }
     }
