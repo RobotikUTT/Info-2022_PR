@@ -28,7 +28,7 @@ void setup() {
 void loop() {
   for (int i = 0; i < NB_CAPTORS; ++i) {
     const double distance = get_distance(i);
-    if (distance != 0 && distance < 100) { // we take distance < 120
+    if (distance != 0 && distance < 200) { // we take distance < 120
         bitSet(message, i); // set the bit n°i to 1
     }
     else{
@@ -37,7 +37,7 @@ void loop() {
     mega_serial.write(message);
     // delay(100); // To debug
   }
-  // Serial.println(message, BIN); // To debug
+  Serial.println(message, BIN); // To debug
 }
 
 inline double get_distance(const int captor_index) { // to get distance from a captor

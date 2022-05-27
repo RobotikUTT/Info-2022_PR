@@ -223,6 +223,8 @@ bool delay_check_coll(uint32_t duration){
         lcd.print(message);
         Serial.print("[DEBUG] Front sonar");
         Serial.println(message);
+        analogWrite(pin_velo_R, 0);
+        analogWrite(pin_velo_L, 0);
         return false;
       }
     }
