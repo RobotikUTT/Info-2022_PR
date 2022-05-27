@@ -200,11 +200,15 @@ void onpasseleshomologations(){
   Forward(); // on doit avancer sur 86cm - la rotation
   while(1); // FIN 
 
-  // timer_move = à définir
-  // TurnRight(); 45° // voir le décalage
+}
 
-  // timer_move = à définir
-  //Forward(); // avancer sur 120cm
+bool delay_check_coll(uint32_t duration){
+  // Création d'une fonction qui remplace delay pour check collision ultrasons
+  uint32_t start_delay = millis();
+  while(millis() - start_delay < duration){
+    // check ultrasons pour savoir ce que l'on fait
+  }
+  return true; // vrai s'est bien passé, false collision/soucis
 }
 
 
@@ -250,7 +254,7 @@ void Backward(){
     analogWrite(pin_velo_R, 100);
     analogWrite(pin_velo_L, 80);
 
-    delay(timer_move);
+    delay_check_coll(timer_move);
 
     // Arret moteur
     analogWrite(pin_velo_R, 0);
@@ -274,7 +278,7 @@ void TurnRight(){
     digitalWrite(pin_b_L, HIGH);
     analogWrite(pin_velo_L, velocityL);
 
-    delay(timer_move);
+    delay_check_coll(timer_move);
 
     // Arret moteur
     analogWrite(pin_velo_R, 0); // par sécurité on arrête les 2
@@ -294,7 +298,7 @@ void TurnLeft(){
     digitalWrite(pin_b_R, HIGH);
     analogWrite(pin_velo_R, 100-20);
 
-    delay(timer_move);
+    delay_check_coll(timer_move);
 
     // Arret moteur
     analogWrite(pin_velo_R, 0); // par sécurité on arrête les 2
@@ -316,7 +320,7 @@ void SpinRight(){
     analogWrite(pin_velo_R, velocity);
     analogWrite(pin_velo_L, velocity);
 
-    delay(timer_move);
+    delay_check_coll(timer_move);
 
     // Arret moteur
     analogWrite(pin_velo_R, 0);
@@ -337,7 +341,7 @@ void SpinLeft(){
     analogWrite(pin_velo_R, velocity);
     analogWrite(pin_velo_L, velocity);
 
-    delay(timer_move);
+    delay_check_coll(timer_move);
 
     // Arret moteur
     analogWrite(pin_velo_R, 0);
