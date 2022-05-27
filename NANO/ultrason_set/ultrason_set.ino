@@ -7,8 +7,8 @@
 #define NB_CAPTORS 4
 
 // Captor 1 : rear left, Captor 2 : rear right, Captor 3 : front right, Captor 4 : front left
-const uint8_t trigger_pins[NB_CAPTORS]{5, 7, 9, 11};
-const uint8_t echo_pins[NB_CAPTORS]{6, 8, 10, 12};
+const uint8_t trigger_pins[NB_CAPTORS]{5, 7, 10, 11};
+const uint8_t echo_pins[NB_CAPTORS]{6, 8, 9, 12};
 uint8_t message = 0;
 
 inline double get_distance(int captor_index);
