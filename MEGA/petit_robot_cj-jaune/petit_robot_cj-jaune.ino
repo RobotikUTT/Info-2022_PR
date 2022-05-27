@@ -53,6 +53,10 @@ int reduir_vitesse = 0;//reduire une roue en mode super shlage si on est vilet
 
 int velocity = 80; // a debug puis delete
 
+unsigned long MS;
+unsigned long start;
+unsigned long stop_;
+
 SoftwareSerial nano(11, 10); // line série nano et méga
 
 LiquidCrystal_I2C lcd(0x27,16,2);  // set the LCD address to 0x27 for a 16 chars and 2 line display
@@ -108,6 +112,7 @@ void setup() {
     lcd.print(" READY TO START ");
     Serial.println(digitalRead(tirette_pin));
     while (!digitalRead(tirette_pin)) {}
+    start=millis(); // start tirette
     Serial.println("[DEBUG] START");
     lcd.setCursor(0,1);
     lcd.print("[DBG]  START    ");
@@ -149,7 +154,21 @@ void setup() {
 }
 
 void loop(){
+  MS = millis()-start; // initialisation var
+  
   onpasseleshomologations();
+
+  // penser à print le nombre de points réalisés
+
+  // On rattrape le chrono après notre séquence
+  while(MS<100000){
+    MS = millis()-start;
+    Serial.println(MS);
+    }
+  stop_ =millis();
+  lcd.setCursor(0,1);
+  lcd.print("[DBG]  STOP     ");
+  while(1); // STOP
   }
 
 
@@ -177,7 +196,7 @@ void onpasseleshomologations(){
   velocityL = 75;
   velocityR = 89;
   Forward(); // on doit avancer sur 86cm - la rotation
-  while(1);
+  while(1); // FIN 
 
   // timer_move = à définir
   // TurnRight(); 45° // voir le décalage
