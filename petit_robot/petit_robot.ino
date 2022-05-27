@@ -7,13 +7,13 @@
 // "Petit Robot", Robotik UTT, Coupe de France 2022
 
 //########### Pin configuration
-#define pin_eye_R A2
-#define pin_eye_L A3
+#define pin_eye_R A2 // capteur infra ligne
+#define pin_eye_L A3 // capteur infra ligne
 
 //########### Motor pins
 
-// a pour reculer, b pour avancer
-#define pin_en_L 2 // enable, permet de set la vitesse
+// a pour reculer, b pour avancer VRAI, a changer reste du code TODO --
+#define pin_en_L 2 // enable, permet de set la vitesse TODO -- change name
 #define pin_en_R 7
 // PIN ENABLE mais c'est du PWM
 
@@ -26,7 +26,7 @@
 #define tirette_pin 8
 
 #define team_pin 9
-int team_side = 0; // 0 paar défaut, 0 coté jaune, 1 coté violet
+int team_side = 0; // 0 par défaut, 0 coté jaune, 1 coté violet
 
 SoftwareSerial nano(11, 10); // line série nano et méga
 
@@ -88,7 +88,7 @@ void setup() {
     lcd.print("[DBG]  START    ");
     delay(5);
 
-    // par défaut on avance
+    // par défaut on avance TODO -- défaut moteurs ne font rien
     digitalWrite(pin_a_L, LOW);
     digitalWrite(pin_a_R, LOW);
     digitalWrite(pin_b_L, HIGH); 
@@ -240,8 +240,9 @@ void findLine() {// DEBUG-FDL
     //analogWrite(pin_en_R, 100); // 80 rame, 100 va vite, 255 le max, non linéaire, speed à 0 pour l'arreter  PWM
     //analogWrite(pin_en_L, 100);
 
-    int aligned = 0; // =0 si non aligné, 1 si aligné sur bande noire
+    int aligned = 0; // =0 si non aligné, 1 si aligné sur bande noire TODO --
     int trigger = 500; // attention au passage sur Tags Aruco
+    // en dessous de 500: touche du noir
     
     // intitialisation capteurs
     int sensor_R = analogRead(pin_eye_R);
@@ -250,9 +251,10 @@ void findLine() {// DEBUG-FDL
         sensor_R = analogRead(pin_eye_R);
         sensor_L = analogRead(pin_eye_L);
 
-        // Faire avancer le robot tout droit
+        // Faire avancer le robot tout droit TODO --
     }
     // TODO faire symétrie coté Violet
+    
     //if (sensor_R < 500){
       // L avance puis suivi ligne
       //}
