@@ -23,8 +23,8 @@ ___
 Le Git est constitué des répertoires suivants:
 ___
 ### Code_Mega/
-Contient le code pour l'Arduino Mega chargée de l'asservissement et du système d'action. Elle gère également les actionneurs.
+Contient le code pour l'Arduino Mega chargée du déplacement et du système d'action. Elle gère également les actionneurs.
 
 ___
 ### Code_Nano/
-Contient le code pour l'Arduino Nano chargée de scruter en continue les retours des sonars et de communiquer le résultat à la Mega.
+Contient le code pour l'Arduino Nano chargée de scruter en continu les retours des sonars et de communiquer le résultat à la Mega.
